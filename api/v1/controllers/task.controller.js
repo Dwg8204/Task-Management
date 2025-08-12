@@ -1,0 +1,44 @@
+const Task = require('../models/task.model');
+const paginationHelper = require('../../../helpers/pagination');
+module.exports.index = async (req, res) => {
+  try {
+      const find ={
+        deleted: false
+      };
+      console.log(req.query);
+      if (req.query.status) {
+        find.status = req.query.status;
+      }
+    let initPagination = {
+        currentPage: 1,
+        limitItem: 2
+    };
+    const countTask = await Task.countDocuments(find);
+    const objectPagination = paginationHelper(initPagination, req.query, countTask);
+    const sort = {};
+    if (req.query.sortKey && req.query.sortValue) {
+        sort[req.query.sortKey] = req.query.sortValue;
+      }
+    const tasks = await Task.find(find).sort(sort).limit(objectPagination.limitItem).skip(objectPagination.skip);
+
+      // console.log(tasks);
+      res.json(tasks);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+};
+
+module.exports.detail = async (req, res) => {
+    try {
+        const task = await Task.findOne(
+            {
+                deleted: false,
+                _id: req.params.id
+            }
+        );
+        // console.log(task);
+        res.json(task);
+      } catch (error) {
+        res.json('Không tìm thấy công việc');
+      }
+};
