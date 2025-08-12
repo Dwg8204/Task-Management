@@ -48,3 +48,28 @@ module.exports.detail = async (req, res) => {
         res.json('Không tìm thấy công việc');
       }
 };
+module.exports.changeStatus = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const status = req.body.status;
+        const task = await Task.updateOne(
+            {
+                deleted: false,
+                _id: id
+            },
+            {
+                status: status
+            }
+        );
+        if (!task) {
+            return res.status(404).json({ message: 'Task not found' });
+        }
+        res.json(
+            {
+                message: 'Cập nhật trạng thái thành công!'
+            }
+        );
+    } catch (error) {
+        res.status(500).json({ message: "lỖI"});
+    }
+};
