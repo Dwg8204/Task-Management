@@ -5,12 +5,17 @@ const Task = require('../../../models/task.model');
 
 router.get("/", async (req, res) => {
   try {
-    const tasks = await Task.find(
-        {
-            deleted: false
-        }
-    );
-    console.log(tasks);
+    const find ={
+      deleted: false
+    };
+    // console.log(req.query);
+    if (req.query.status) {
+      find.status = req.query.status;
+    }
+
+    const tasks = await Task.find(find);
+    
+    // console.log(tasks);
     res.json(tasks);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -25,7 +30,7 @@ router.get("/detail/:id", async (req, res) => {
             _id: req.params.id
         }
     );
-    console.log(task);
+    // console.log(task);
     res.json(task);
   } catch (error) {
     res.json('Không tìm thấy công việc');
