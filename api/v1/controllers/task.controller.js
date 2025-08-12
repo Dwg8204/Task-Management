@@ -1,5 +1,6 @@
 const Task = require('../models/task.model');
 const paginationHelper = require('../../../helpers/pagination');
+const searchHelper = require('../../../helpers/search');
 module.exports.index = async (req, res) => {
   try {
       const find ={
@@ -9,6 +10,11 @@ module.exports.index = async (req, res) => {
       if (req.query.status) {
         find.status = req.query.status;
       }
+    const search = searchHelper(req.query);
+    const keyword = search.keyword;
+    if (keyword) {
+        find.title = search.regex;
+    }
     let initPagination = {
         currentPage: 1,
         limitItem: 2
