@@ -73,3 +73,29 @@ module.exports.changeStatus = async (req, res) => {
         res.status(500).json({ message: "lỖI"});
     }
 };
+
+module.exports.changeMulti = async (req, res) => {
+    try {
+        const { ids, key, value} = req.body;
+        switch (key) {
+            case 'status':
+                await Task.updateMany(
+                    {
+                        deleted: false,
+                        _id: { $in: ids }
+                    },
+                    {
+                        status: value
+                    }
+                );
+                res.json({
+                    message: 'Cập nhật trạng thái thành công!'
+                });
+                break;
+            default:
+                return res.status(400).json({ message: ' Không tồn tại' });
+        }
+    } catch (error) {
+        res.status(500).json({ message: "lỖI"});
+    }
+};
