@@ -112,3 +112,21 @@ module.exports.create = async (req, res) => {
         res.status(500).json({ message: "lỖI"});
     }
 };
+
+module.exports.edit = async (req, res) => {
+    try {
+        const id = req.params.id;
+        await Task.updateOne(
+            {
+                deleted: false,
+                _id: id
+            },
+            req.body
+        );
+        res.json({
+            message: 'Cập nhật công việc thành công!'
+        });
+    } catch (error) {
+        res.status(500).json({ message: "lỖI"});
+    }
+};
