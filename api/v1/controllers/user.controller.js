@@ -86,3 +86,25 @@ module.exports.forgotPassword = async (req, res) => {
         res.status(500).json({ message: "Lỗi quên mật khẩu", error });
     }
 };
+
+module.exports.otpPassword = async (req, res) => {
+    try {
+        const { email, otp } = req.body;
+        const forgotPassword = await ForgotPassword.findOne({ email, otp });
+        if (!forgotPassword) {
+            return res.status(400).json({ message: "Mã OTP không hợp lệ" });
+        }
+        if (forgotPassword.expireAt < Date.now()) {
+            return res.status(400).json({ message: "Mã OTP đã hết hạn" });
+        }
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(404).json({ message: "Người dùng không tồn tại" });
+        }
+        const token = user.token;
+        res.cookie('token', token);
+        res.status(200).json({ message: "Xác thực thành công!" });
+    } catch (error) {
+        res.status(500).json({ message: "Lỗi xác thực OTP", error });
+    }
+};
