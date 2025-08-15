@@ -1,6 +1,10 @@
 const md5 = require('md5');
 const User = require('../models/user.model'); 
+const generate = require('../../../helpers/generate');
+const sendMail = require('../../../helpers/sendMail');
 
+const e = require('express');
+const ForgotPassword = require('../models/forgot-password.model');
 
 module.exports.register = async (req, res) => {
     try {
@@ -46,5 +50,39 @@ module.exports.login = async (req, res) => {
         });
     } catch (error) {
         res.status(500).json({ message: "Lỗi đăng nhập", error });
+    }
+};
+
+module.exports.forgotPassword = async (req, res) => {
+    try {
+        const { email } = req.body;
+        const user = await User.findOne({ 
+            email, 
+            deleted: false 
+        });
+        if (!user) {
+            return res.status(404).json({ message: "Người dùng không tồn tại" });
+        }
+        const otp = generate.generateRandomString(6);
+        const timeExpires = Date.now() + 5 * 60 * 1000; // 5 phút
+        const objectForgotPassword = {
+            email: email,
+            otp: otp,
+            expireAt: timeExpires
+        };
+        const forgotPassword = new ForgotPassword(objectForgotPassword);
+        await forgotPassword.save();
+
+        //Gửi OTP
+        const subject = "Mã OTP đặt lại mật khẩu";
+        const html = `
+            <p>Mã OTP của bạn là: <strong>${otp}</strong></p>
+            <p>Vui lòng không chia sẻ mã này với bất kỳ ai.</p>
+        `;
+        await sendMail.sendMail(email, subject, html);
+
+        res.status(200).json({ message: "Đã gửi email đặt lại mật khẩu" });
+    } catch (error) {
+        res.status(500).json({ message: "Lỗi quên mật khẩu", error });
     }
 };
