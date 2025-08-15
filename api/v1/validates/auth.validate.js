@@ -21,32 +21,32 @@ const md5 = require('md5');
 //     next();
 // }
 
-// module.exports.loginPost = (req, res, next) => {
-//   const errors = [];
-//   let { email, password } = req.body || {};
+module.exports.login = (req, res, next) => {
+  const errors = [];
+  let { email, password } = req.body || {};
 
-//   // email
-//   if (!email) {
-//     errors.push('Vui lòng nhập email');
-//   } else {
-//     email = String(email).trim().toLowerCase();
-//     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-//     if (!emailRegex.test(email)) errors.push('Email không hợp lệ');
-//     req.body.email = email;
-//   }
+  // email
+  if (!email) {
+    errors.push('Vui lòng nhập email');
+  } else {
+    email = String(email).trim().toLowerCase();
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+    if (!emailRegex.test(email)) errors.push('Email không hợp lệ');
+    req.body.email = email;
+  }
 
-//   // password
-//   if (!password) {
-//     errors.push('Vui lòng nhập mật khẩu');
-//   } else if (password.length < 6) {
-//     errors.push('Mật khẩu phải có ít nhất 6 ký tự');
-//   }
+  // password
+  if (!password) {
+    errors.push('Vui lòng nhập mật khẩu');
+  } else if (password.length < 6) {
+    errors.push('Mật khẩu phải có ít nhất 6 ký tự');
+  }
 
-//   if (errors.length) {
-//     return res.status(400).json({ message: 'Dữ liệu không hợp lệ', errors });
-//   }
-//   return next();
-// };
+  if (errors.length) {
+    return res.status(400).json({ message: 'Dữ liệu không hợp lệ', errors });
+  }
+  return next();
+};
 
 module.exports.register = async (req, res, next) => {
   try {
