@@ -108,3 +108,17 @@ module.exports.otpPassword = async (req, res) => {
         res.status(500).json({ message: "Lỗi xác thực OTP", error });
     }
 };
+module.exports.resetPassword = async (req, res) => {
+    try {
+        const {email, newPassword} = req.body;
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(404).json({ message: "Người dùng không tồn tại" });
+        }
+        user.password = md5(newPassword);
+        await user.save();
+        res.status(200).json({ message: "Đặt lại mật khẩu thành công" });
+    } catch (error) {
+        res.status(500).json({ message: "Lỗi đặt lại mật khẩu", error });
+    }
+};
