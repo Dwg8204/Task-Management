@@ -122,3 +122,22 @@ module.exports.resetPassword = async (req, res) => {
         res.status(500).json({ message: "Lỗi đặt lại mật khẩu", error });
     }
 };
+
+module.exports.detail = async (req, res) => {
+    try {
+        const token = req.cookies.token;
+        const user = await User.findOne({ 
+            token: token,
+            deleted: false
+         }).select('-password -__v -deleted -_id -token');
+        if (!user) {
+            return res.status(404).json({ message: "Người dùng không tồn tại" });
+        }
+        res.status(200).json({ 
+            message: "Lấy thông tin người dùng thành công",
+            info: user
+        });
+    } catch (error) {
+        res.status(500).json({ message: "Lỗi lấy thông tin người dùng", error });
+    }
+};
