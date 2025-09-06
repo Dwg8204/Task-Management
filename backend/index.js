@@ -11,7 +11,10 @@ const port = process.env.PORT;
 const database = require('./config/database');
 // create application/json parser
 app.use(bodyParser.json());
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:3001', // Chỉ cho phép origin này truy cập
+  credentials: true                // Cho phép gửi cookie
+}));
 app.use(cookieParser())
 
 app.use(cookieParser('HGLKHGIOG')); // Sử dụng cookieParser đã import
