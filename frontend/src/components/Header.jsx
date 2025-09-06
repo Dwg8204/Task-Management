@@ -1,6 +1,6 @@
 import React from 'react';
 import { useAuth } from '../hooks/useAuth';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 const Header = () => {
   const { currentUser, logout } = useAuth();
@@ -13,11 +13,22 @@ const Header = () => {
 
   return (
     <header className="app-header">
-      <div className="logo">Quản lý công việc</div>
+      <div className="logo"><Link to="/">Quản lý công việc</Link></div>
       {currentUser && (
         <div className="user-info">
-          <span>Chào, {currentUser.fullName}</span>
+          {}
+          {/* Tạo một Link lớn bao quanh tên và avatar */}
+          <Link to="/profile" className="user-profile-link">
+            <span>Chào, {currentUser.fullName}</span>
+            <img 
+              src={currentUser.avatar || 'https://via.placeholder.com/40'} 
+              alt="Avatar" 
+              className="header-avatar"
+            />
+          </Link>
+          
           <button onClick={handleLogout}>Đăng xuất</button>
+          {}
         </div>
       )}
     </header>
