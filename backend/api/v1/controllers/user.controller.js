@@ -16,7 +16,7 @@ module.exports.register = async (req, res) => {
         if (existEmail) {
             return res.status(400).json({ message: "Email đã tồn tại" });
         }
-        const user = new User({ email, password: md5(password), fullName });
+        const user = new User({ email, password: md5(password), fullName, token: generate.generateRandomString(30) });
         await user.save();
         const token = user.token;
         res.cookie('token', token);
