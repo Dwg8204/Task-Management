@@ -18,7 +18,6 @@ const userSchema = new mongoose.Schema({
     },
     token: {
         type: String,
-        default: generate.generateRandomString(20)
     },
     phone: {
         type: String,
